@@ -1,0 +1,95 @@
+<template>
+   
+    <div if:false={isMember} class="elastik-app">
+        <!-- <c-timesheet-navbar></c-timesheet-navbar> -->
+       
+        <div class="main-content">
+            <div class="filter-section">
+                <lightning-combobox name="project" label="Select Project" placeholder="Select Project" options={projectOptions} onchange={handleProjectChange}></lightning-combobox>
+                <lightning-combobox name="user" label="Select User" placeholder="Select User" options={userOptions} onchange={handleUserChange}></lightning-combobox>
+                <lightning-combobox name="name" label="Select Task" placeholder="Select Name" options={nameOptions} onchange={handleNameChange}></lightning-combobox>
+                <lightning-combobox name="month" label="Select Month" placeholder="Select Month"  value={selectedMonth} options={monthOptions} onchange={handleMonthChange}></lightning-combobox>
+                <lightning-combobox name="year" label="Select Year" placeholder="Select Year" value={selectedYear} options={yearOptions} onchange={handleYearChange}></lightning-combobox>
+    
+                <lightning-input type="date" name="startDate" label="Start Date" value={startDate} onchange={handleStartDateChange} max={today}></lightning-input>
+                <lightning-input type="date" name="endDate" label="End Date" value={endDate} onchange={handleEndDateChange} max={today}></lightning-input>
+                
+                <lightning-button class="slds-m-top_large" label="Clear Dates" variant="brand-outline" onclick={clearDateFilters}></lightning-button>
+            </div>
+        </div>
+
+        <template if:true={ismessage}>
+            <p class="ismessage">Warning <br>You cannot select a future date</p>
+        </template>
+
+       
+
+        
+            <div class="action-buttons">
+                <template if:true={logs1}>
+                    <div class="filteredMinutes">
+                        Total Minutes : {totalMinutes}
+                    </div>
+                </template>
+                <div class="export-section">
+                    <lightning-button label="Clear All Filters" variant="brand-outline" onclick={clearAllFilters}></lightning-button>
+                    <lightning-button label="Export to Excel" variant="brand" onclick={exportToExcel}></lightning-button>
+                   
+                </div>
+            </div>
+            <template if:true={isLoading}>
+                <lightning-spinner alternative-text="Loading"></lightning-spinner>
+            </template>
+            
+            
+
+            <template if:false={isLoading}>
+                
+                <template if:true={logs}>
+                    
+                    <lightning-datatable 
+    class="slds-max-medium-table_stacked"
+    key-field="id"
+    data={logs}
+    columns={columns}
+    sorted-by={sortedBy}
+    sorted-direction={sortDirection}
+    onsort={handleSort}>
+</lightning-datatable>
+                   
+                </template>
+                <template if:false={logs}>
+                    <div class="slds-text-align_center">
+                        No logs found.
+                    </div>
+                </template>
+            </template>
+            <div class="pagination">
+                <lightning-button label="Previous" variant="brand-outline" onclick={handlePreviousPage} disabled={isPreviousButtonDisabled}></lightning-button>
+                <lightning-button label="Next" variant="brand-outline" onclick={handleNextPage} disabled={isNextButtonDisabled}></lightning-button>
+            </div>
+        </div>
+   
+    <template if:true={showMessage}>
+        <div class="slds-notify_container">
+            <div class="slds-notify slds-notify_toast slds-theme_error" role="alert">
+                <span class="slds-assistive-text">Error</span>
+                <div class="slds-notify__content">
+                    <h2 class="slds-text-heading_small">Message</h2>
+                    <p>{Message}</p>
+                </div>
+            </div>
+        </div>
+    </template>
+    <template if:true={showMessageExport}>
+        <div class="slds-notify_container">
+            <div class="slds-notify slds-notify_toast slds-theme_success" role="Success">
+                <span class="slds-assistive-text">Success</span>
+                <div class="slds-notify__content">
+                    <h2 class="slds-text-heading_small">Message</h2>
+                    <p>{MessageExport}</p>
+                </div>
+            </div>
+        </div>
+    </template>
+</template>

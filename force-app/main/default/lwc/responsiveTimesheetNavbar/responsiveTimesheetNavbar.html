@@ -1,0 +1,69 @@
+<template>
+    <div class="navbar">
+        <div class="fix">
+            <div class="logo" data-url="/">
+                <div class="company">
+                    <img class="navClass" onclick={navigatetohomepage} src="/sfsites/c/resource/elastik_logo" alt="logo" />
+                    <b>Elastik</b>
+                </div>
+                <div class="nav-buttons">
+                    <template if:true={isManagerOrSuperManager}>
+                        <button class="nav-button home-portal-button" data-page="home" data-active={isHomePage} onclick={navigatetohomepage}>Home</button>
+                    </template>
+                    <template if:true={isManager}>
+                        <button class="nav-button admin-portal-button" data-page="admin" data-active={isAdminPage} onclick={navigatetoadminpage}>Admin Portal</button>
+                    </template>
+                    <template if:true={isManagerOrSuperManager}>
+                        <button class="nav-button anlytics-portal-button" data-page="analytics" data-active={isAnalyticsPage} onclick={navigatetoanalyticspage}>Analytics</button>
+                    </template>
+                </div>
+                <div class="user-section">
+                    <div if:true={loggedInUserName} class="user-image" onclick={toggleDropdown}>
+                        <img src="/sfsites/c/resource/user" alt="User Profile Pic" />
+                        <b>{loggedInUserName}</b>
+                        <div class="drop">
+                            <img src="/sfsites/c/resource/dropdown" alt="userId" />
+                        </div>
+                        <template if:true={isDropdownVisible}>
+                            <div class="dropdown-menu">
+                                <div class="profile-modal">
+                                    <div class="frame-wrapper">
+                                        <div class="frame">
+                                            <div class="group">
+                                                <lightning-icon
+                                                icon-name="utility:logout"
+                                                class="vector"
+                                                size="x-small"
+                                              >
+                                              </lightning-icon>
+                                                <div class="text-wrapper">
+                                                    <a href={logoutLink} target="_self">Logout</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </template>
+                    </div>
+                </div>
+                <div class="hamburger-menu" onclick={toggleMobileMenu}>
+                    <div class="bar"></div>
+                    <div class="bar"></div>
+                    <div class="bar"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="mobile-menu" if:true={isMobileMenuOpen}>
+        <template if:true={isManagerOrSuperManager}>
+            <button class="nav-button" data-active={isHomePage} onclick={navigatetohomepage}>Home</button>
+        </template>
+        <template if:true={isManager}>
+            <button class="nav-button" data-active={isAdminPage} onclick={navigatetoadminpage}>Admin Portal</button>
+        </template>
+        <template if:true={isManagerOrSuperManager}>
+            <button class="nav-button" data-active={isAnalyticsPage} onclick={navigatetoanalyticspage}>Analytics</button>
+        </template>
+    </div>
+</template>

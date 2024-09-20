@@ -1,0 +1,73 @@
+<template>
+<div if:false={isMember}>
+     <c-responsive-timesheet-navbar></c-responsive-timesheet-navbar>
+    <div class="container">
+        
+        <div class="status-cards">
+            <div class="card up-to-date" onclick={fetchUpToDateMembers}>
+                <h2>Up-to-date</h2>
+                <p>Total Members</p>
+                <span class="count">{upToDateMembers.length}</span>
+            </div>
+            <div class="card remaining" onclick={fetchRemainingMembers}>
+                <h2>Remaining</h2>
+                <p>Total Members</p>
+                <span class="count">{remainingMembers.length}</span>
+            </div>
+        </div>
+        <div class="timesheet">
+            <div class="timesheet-header">
+                <h3>Timesheet Details</h3>
+                <h3>Expected Minutes : <b>{expectedMinutes}</b></h3>
+                <div class="month-selector">
+                    <button class="prev" onclick={handlePreviousSelector}>&lt;</button>
+                    <span class="month">{monthName}</span>
+                    <button class="next" onclick={handleNextSelector}>&gt;</button>
+                </div>
+            </div>
+            <hr>
+            <table class="timesheet-table">
+                <thead>
+                    <tr>
+                        <th data-field="FirstName" onclick={handleSort}>
+                            Member Name
+                        </th>
+                        <th data-field="TotalMinutes" onclick={handleSort}>
+                            Total Minutes Spent
+                        </th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <template if:true={flag}>
+                        <template for:each={upToDateMembers} for:item="member">
+                            <tr key={member.Id}>
+                                <td>{member.FirstName} {member.LastName}</td>
+                                <td>{member.TotalMinutes}</td>
+                                <td>
+                                    <div class="up-to-date-status-column">
+                                        Done
+                                    </div>
+                                </td>
+                            </tr>
+                        </template>
+                    </template>
+                    <template if:false={flag}>
+                        <template for:each={remainingMembers} for:item="member">
+                            <tr key={member.Id}>
+                                <td>{member.FirstName} {member.LastName}</td>
+                                <td>{member.TotalMinutes}</td>
+                                <td> 
+                                    <div class="remaining-status-column">
+                                        Remaining
+                                    </div>
+                                </td>
+                            </tr>
+                        </template>
+                    </template>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+</template>

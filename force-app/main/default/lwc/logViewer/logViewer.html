@@ -1,0 +1,124 @@
+<template>
+    <lightning-card title="Log Viewer">
+        <div class="slds-p-around_medium slds-grid slds-wrap">
+            <lightning-combobox
+                class="slds-m-bottom_medium slds-col slds-size_1-of-1 slds-medium-size_1-of-5"
+                name="projects"
+                label="Select Project"
+                value={selectedProject}
+                placeholder="Select a project"
+                options={projectOptions}
+                onchange={handleProjectChange}>
+            </lightning-combobox>
+            <lightning-combobox
+                class="slds-m-bottom_medium slds-col slds-size_1-of-1 slds-medium-size_1-of-5"
+                name="months"
+                label="Select Month"
+                value={selectedMonth}
+                placeholder="Select a month"
+                options={monthOptions}
+                onchange={handleMonthChange}>
+            </lightning-combobox>
+            <lightning-combobox
+                class="slds-m-bottom_medium slds-col slds-size_1-of-1 slds-medium-size_1-of-5"
+                name="users"
+                label="Select User"
+                value={selectedUser}
+                placeholder="Select a user"
+                options={userOptions}
+                onchange={handleUserChange}>
+            </lightning-combobox>
+            <lightning-input 
+                class="slds-m-bottom_medium slds-col slds-size_1-of-1 slds-medium-size_1-of-5"
+                type="date" 
+                name="startDate" 
+                label="Start Date" 
+                value={startDate}
+                onchange={handleStartDateChange}>
+            </lightning-input>
+            <lightning-input 
+                class="slds-m-bottom_medium slds-col slds-size_1-of-1 slds-medium-size_1-of-5"
+                type="date" 
+                name="endDate" 
+                label="End Date" 
+                value={endDate}
+                onchange={handleEndDateChange}>
+            </lightning-input>
+           
+            <template if:true={showMessage}>
+                <div class="slds-notify_container">
+                    <div class="slds-notify slds-notify_toast slds-theme_error" role="alert">
+                        <span class="slds-assistive-text">Error</span>
+                        <div class="slds-notify__content">
+                            <h2 class="slds-text-heading_small">Message</h2>
+                            <p>{Message}</p>
+                        </div>
+                    </div>
+                </div>
+            </template>
+            
+            
+
+            <div class="slds-p-around_medium slds-text-align_center">
+                <lightning-button label="Export to Excel" onclick={exportToExcel}></lightning-button>
+            </div>
+
+           <div class="slds-grid slds-grid_align-end slds-size_1-of-1">
+                <lightning-button label="Clear Date" onclick={clearDateFilters}></lightning-button>
+            </div>
+
+        </div> 
+        <!-- <div class="filter-section">
+            <select class="select-box" name="projects" onchange={handleProjectChange}>
+                <option>Select Project</option>
+              
+                <template for:each={projectOptions} for:item="option">
+                    <option key={option.value} value={option.value}>{option.label}</option>
+                </template>
+            </select>
+            <select class="select-box" name="users" onchange={handleUserChange}>
+                <option>Select User</option>
+               
+                <template for:each={userOptions} for:item="option">
+                    <option key={option.value} value={option.value}>{option.label}</option>
+                </template>
+            </select>
+            <select class="select-box" name="months" onchange={handleMonthChange}>
+                <option>Select Month</option>
+                
+                <template for:each={monthOptions} for:item="option">
+                    <option key={option.value} value={option.value}>{option.label}</option>
+                </template>
+            </select>
+            <input class="date-input" type="date" name="startDate" onchange={handleStartDateChange} placeholder="Start Date"/>
+            <input class="date-input" type="date" name="endDate" onchange={handleEndDateChange} placeholder="End Date"/>
+            <button class="search-button">Search</button>
+        </div> -->
+       
+        <template if:true={isLoading}>
+            <lightning-spinner alternative-text="Loading"></lightning-spinner>
+        </template>
+        <template if:false={isLoading}>
+            <template if:true={logs}>
+                <lightning-datatable 
+                    class="slds-max-medium-table_stacked"
+                    key-field="id"
+                    data={logs}
+                    columns={columns}>
+                </lightning-datatable>
+            </template>
+            <template if:false={logs}>
+                <div class="slds-text-align_center">
+                    No logs found.
+                </div>
+            </template>
+        </template>
+        <div class="slds-p-around_medium slds-grid slds-wrap slds-grid_align-spread">
+            <lightning-button label="Previous" onclick={handlePreviousPage} disabled={isPreviousButtonDisabled}></lightning-button>
+            <lightning-button label="Next" onclick={handleNextPage} disabled={isNextButtonDisabled}></lightning-button>
+        </div>
+       
+    </lightning-card>
+
+    
+</template>

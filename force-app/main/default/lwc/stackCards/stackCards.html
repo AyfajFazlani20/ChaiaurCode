@@ -1,0 +1,95 @@
+<template>
+    
+
+
+    
+
+  <div class="center">
+    <!-- <div class="top">Hello Devs <br> Scroll Down </div> -->
+    <div class="stack-area">
+      <div class="left" if:false={isWeekend}>
+        <div class="title">News Reminder</div>
+        <div class="sub-title">
+          "The bad news is time flies. The good news is you're the pilot."
+          <br />
+          <!-- <button>See More Details</button> -->
+        </div>
+      </div>
+      <div class="right" if:false={isWeekend}>
+
+        <div class="cards" if:true={profiles}>
+          
+          <!-- <div class="card">
+            <div class="sub">Simplified</div>
+            <div class="content">Complex tasks are now simple</div>
+          </div> -->
+          <template for:each={profiles} for:item="profile" if:false={flag}>
+             
+                  <div key={profile.Id} class="card">
+                      <div class="sub">
+                          <h2>Today's Turn</h2>
+                          <a href="/" target="_self"><img src={profile.photo__c} alt="User Profile" /></a> 
+                           
+                          
+                      </div>
+                      <div class="content">
+                          <h2>{profile.Name}</h2>
+                          
+                          <!-- <p>Email: {profile.Email__c}</p>
+                          <p>Date of Turn: {profile.Date_of_Turn__c}</p> -->
+                      </div>
+                      <h4> {currentDate} </h4>
+                  </div>
+              
+          
+          </template>
+
+          
+            <template if:true={flag}>
+            <div class="card">
+              <div class="sub">
+                  <h2>Today's Turn</h2>
+                  <a href="/" target="_self"><img src='/sfsites/c/resource/ben' alt="User Profile" /></a>  
+                  
+              </div>
+              <div class="content">
+                  <h2>Benjamin Lee</h2>
+                   
+              </div>
+              <h4> {currentDate} </h4>
+          </div>
+          </template>
+        
+          <template for:each={profiles1} for:item="profile1" >
+
+              <div key={profile1.Id} class="card">
+
+                  <div class="sub">
+                      <h2>Next Turn</h2>
+                      <img src={profile1.photo__c} alt="Profile Picture" />
+                  </div>
+                  <div class="content">
+                      <h2>{profile1.Name}</h2>
+                      <!-- <p>Email: {profile1.Email__c}</p>
+                      <p>Date of Turn: {profile1.Date_of_Turn__c}</p> -->
+                  </div>
+                  <h3>{profile1.nextDate}</h3>
+              </div>
+            
+      
+            </template>
+           
+
+      
+        </div>
+      </div>
+      <div if:true={isWeekend}>
+        <div class="title">Happy Weekend !!</div>
+      </div>
+    </div>
+    <!-- <div class="bottom">Other Content...</div> -->
+  </div>
+
+  
+
+</template>

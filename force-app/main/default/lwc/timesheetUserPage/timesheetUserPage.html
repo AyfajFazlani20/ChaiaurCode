@@ -1,0 +1,527 @@
+<template>
+  <div class="container">
+    <template if:false={isSuperManager}>
+    <!-- <c-timesheet-navbar></c-timesheet-navbar> -->
+     <c-responsive-timesheet-navbar></c-responsive-timesheet-navbar>
+    </template>
+    
+    <template if:true={isManager}>
+      
+      <div class="main-page">
+        <div class="upper-section">
+          <div class="calendar">
+            <div class="month-year">
+              <button class="prev" onclick={prevMonth}>&#8249;</button>
+              <div class="month-year-text">{monthYear}</div>
+              <button class="next" onclick={nextMonth}>&#8250;</button>
+            </div>
+            <div class="weekdays">
+              <div>Sun</div>
+              <div>Mon</div>
+              <div>Tue</div>
+              <div>Wed</div>
+              <div>Thu</div>
+              <div>Fri</div>
+              <div>Sat</div>
+            </div>
+
+            <div class="days" if:true={daysInMonth}>
+              <template for:each={daysInMonth} for:item="day">
+                <div
+                  key={day.date}
+                  class={day.classes}
+                  onclick={handleDateClick}
+                  data-date={day.date}
+                >
+                  {day.value}
+                </div>
+              </template>
+            </div>
+          </div>
+
+          <div class="quote">{quote}</div>
+          <div class="lok">
+            <img src="/sfsites/c/resource/tin" alt="Clock" />
+          </div>
+          <div class="add-tasks">
+            <div class="add-entry-heading-toggle">
+              <b
+                ><h2>
+                  {heading} 🪶
+                  <span if:false={showCalendar}> for {displayDate}</span>
+                </h2></b
+              >
+              <label class="switch">
+                <input
+                  type="checkbox"
+                  onchange={handleToggleChange}
+                  checked={showCalendar}
+                />
+                <span class="slider round"></span>
+              </label>
+            </div>
+            <div
+              if:true={showCalendar}
+              class="slds-grid slds-grid_align-center slds-p-around_medium"
+            >
+              <lightning-input
+                type="date"
+                label="Start Date"
+                value={startDate}
+                onchange={handleStartDateChange}
+                class="slds-m-right_medium"
+              ></lightning-input>
+              <lightning-input
+                type="date"
+                label="End Date"
+                value={endDate}
+                onchange={handleEndDateChange}
+                class="slds-m-right_medium"
+              ></lightning-input>
+            </div>
+            <h3>Project</h3>
+            <select
+              name="project"
+              onchange={handleProjectChange}
+              if:true={projectOptions}
+              class="form-select"
+            >
+              <option value="Select Project">Select Project</option>
+              <template for:each={projectOptions} for:item="opt">
+                <option key={opt.value} value={opt.value}>{opt.label}</option>
+              </template>
+            </select>
+
+            <h3>Task</h3>
+            <select
+              name="task"
+              onchange={handleTaskChange}
+              class="form-select"
+              data-id="projectSelect"
+            >
+              <option value="Select Task">Select Task</option>
+              <template for:each={taskOptions} for:item="opt">
+                <option key={opt.value} value={opt.value}>{opt.label}</option>
+              </template>
+            </select>
+
+            <lightning-input
+              class="custom-height"
+              label="Description"
+              type="text"
+              value={description}
+              onchange={handleDescriptionChange}
+            ></lightning-input>
+
+            <lightning-input
+              class="custom-height"
+              label="Time Spent (minutes)"
+              type="number"
+              value={timeSpent}
+              onchange={handleTimeChange}
+              max="1440"
+              min="0"
+            ></lightning-input>
+
+            <div class="btn">
+              <!-- <button onclick={saveLog} class="slds-button slds-button_brand" style="--sds-c-button-radius-border : 15px;--sds-c-button-brand-color-background : #EE7214; --sds-c-button-brand-color-background-hover:  #d77d37 ;  --sds-c-button-brand-color-border : white; ">Save</button> -->
+              <button
+                if:false={showCalendar}
+                onclick={saveLog}
+                class="slds-button slds-button_brand"
+                style="
+                  --sds-c-button-radius-border: 15px;
+                  --sds-c-button-brand-color-background: #ee7214;
+                  --sds-c-button-brand-color-background-hover: #d77d37;
+                  --sds-c-button-brand-color-border: white;
+                "
+              >
+                Save
+              </button>
+              <button
+                if:true={showCalendar}
+                onclick={MultisaveLog}
+                class="slds-button slds-button_brand"
+                style="
+                  --sds-c-button-radius-border: 15px;
+                  --sds-c-button-brand-color-background: #ee7214;
+                  --sds-c-button-brand-color-background-hover: #d77d37;
+                  --sds-c-button-brand-color-border: white;
+                "
+              >
+                MultiSave
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="lower-section">
+          <div class="logged-tasks">
+            <div class="filledhours">{filledHours}</div>
+            <div if:true={logs} class="myTable">
+              <lightning-datatable
+                class="slds-max-medium-table_stacked"
+                key-field="Id"
+                data={logs}
+                columns={columns}
+                onrowaction={handleRowAction}
+                hide-checkbox-column
+              ></lightning-datatable>
+            </div>
+          </div>
+        </div>
+        <div class="progress-bar">
+          <div class="chart-container">
+            <canvas id="pieChart1" width="400" height="400"></canvas>
+          </div>
+        </div>
+      </div>
+    </template>
+
+    <template if:true={isMember}>
+      <div class="main-page">
+        <div class="upper-section">
+          <div class="calendar">
+            <div class="month-year">
+              <button class="prev" onclick={prevMonth}>&#8249;</button>
+              <div class="month-year-text">{monthYear}</div>
+              <button class="next" onclick={nextMonth}>&#8250;</button>
+            </div>
+            <div class="weekdays">
+              <div>Sun</div>
+              <div>Mon</div>
+              <div>Tue</div>
+              <div>Wed</div>
+              <div>Thu</div>
+              <div>Fri</div>
+              <div>Sat</div>
+            </div>
+
+            <div class="days" if:true={daysInMonth}>
+              <template for:each={daysInMonth} for:item="day">
+                <div
+                  key={day.date}
+                  class={day.classes}
+                  onclick={handleDateClick}
+                  data-date={day.date}
+                >
+                  {day.value}
+                </div>
+              </template>
+            </div>
+          </div>
+
+          <div class="lok">
+            <img src="/sfsites/c/resource/tin" alt="Clock" />
+          </div>
+          <div class="add-tasks">
+            <div class="add-entry-heading-toggle">
+              <b
+                ><h2>
+                  {heading} 🪶
+                  <span if:false={showCalendar}> for {displayDate}</span>
+                </h2></b
+              >
+              <label class="switch">
+                <input
+                  type="checkbox"
+                  onchange={handleToggleChange}
+                  checked={showCalendar}
+                />
+                <span class="slider round"></span>
+              </label>
+            </div>
+            <div
+              if:true={showCalendar}
+              class="slds-grid slds-grid_align-center slds-p-around_medium"
+            >
+              <lightning-input
+                type="date"
+                label="Start Date"
+                value={startDate}
+                onchange={handleStartDateChange}
+                class="slds-m-right_medium"
+              ></lightning-input>
+              <lightning-input
+                type="date"
+                label="End Date"
+                value={endDate}
+                onchange={handleEndDateChange}
+                class="slds-m-right_medium"
+              ></lightning-input>
+            </div>
+            <h3>Project</h3>
+            <select
+              name="project"
+              onchange={handleProjectChange}
+              if:true={projectOptions}
+              class="form-select"
+            >
+              <option value="Select Project">Select Project</option>
+              <template for:each={projectOptions} for:item="opt">
+                <option key={opt.value} value={opt.value}>{opt.label}</option>
+              </template>
+            </select>
+
+            <h3>Task</h3>
+            <select
+              name="task"
+              onchange={handleTaskChange}
+              class="form-select"
+              data-id="projectSelect"
+            >
+              <option value="Select Task">Select Task</option>
+              <template for:each={taskOptions} for:item="opt">
+                <option key={opt.value} value={opt.value}>{opt.label}</option>
+              </template>
+            </select>
+
+            <lightning-input
+              class="custom-height"
+              label="Description"
+              type="text"
+              value={description}
+              onchange={handleDescriptionChange}
+            ></lightning-input>
+
+            <lightning-input
+              class="custom-height"
+              label="Time Spent (minutes)"
+              type="number"
+              value={timeSpent}
+              onchange={handleTimeChange}
+              max="1440"
+              min="0"
+            ></lightning-input>
+
+            <div class="btn">
+              <!-- <button onclick={saveLog} class="slds-button slds-button_brand" style="--sds-c-button-radius-border : 15px;--sds-c-button-brand-color-background : #EE7214; --sds-c-button-brand-color-background-hover:  #d77d37 ;  --sds-c-button-brand-color-border : white; ">Save</button> -->
+              <button
+                if:false={showCalendar}
+                onclick={saveLog}
+                class="slds-button slds-button_brand"
+                style="
+                  --sds-c-button-radius-border: 15px;
+                  --sds-c-button-brand-color-background: #ee7214;
+                  --sds-c-button-brand-color-background-hover: #d77d37;
+                  --sds-c-button-brand-color-border: white;
+                "
+              >
+                Save
+              </button>
+              <button
+                if:true={showCalendar}
+                onclick={MultisaveLog}
+                class="slds-button slds-button_brand"
+                style="
+                  --sds-c-button-radius-border: 15px;
+                  --sds-c-button-brand-color-background: #ee7214;
+                  --sds-c-button-brand-color-background-hover: #d77d37;
+                  --sds-c-button-brand-color-border: white;
+                "
+              >
+                MultiSave
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="lower-section">
+          <div class="logged-tasks">
+            <div class="filledhours">{filledHours}</div>
+            <div if:true={logs} class="myTable">
+              <lightning-datatable
+                class="slds-max-medium-table_stacked"
+                key-field="Id"
+                data={logs}
+                columns={columns}
+                onrowaction={handleRowAction}
+                hide-checkbox-column
+              ></lightning-datatable>
+            </div>
+          </div>
+        </div>
+        <div class="progress-bar">
+          <div class="chart-container">
+            <canvas id="pieChart" width="400" height="400"></canvas>
+          </div>
+        </div>
+      </div>
+    </template>
+
+    <div class="footer"></div>
+  </div>
+  <template if:true={isSuperManager}>
+    <div>
+      <c-admin-dashboard-page></c-admin-dashboard-page>
+    </div>
+  </template>
+
+  <template if:true={showMessage}>
+    <div class="slds-notify_container">
+      <div
+        class="slds-notify slds-notify_toast slds-theme_success"
+        role="alert"
+      >
+        <span class="slds-assistive-text">Success</span>
+        <div class="slds-notify__content">
+          <h2 class="slds-text-heading_small">Message</h2>
+          <p>{message}</p>
+        </div>
+      </div>
+    </div>
+  </template>
+  <template if:true={showError}>
+    <div class="slds-notify_container">
+      <div class="slds-notify slds-notify_toast slds-theme_error" role="alert">
+        <span class="slds-assistive-text">Success</span>
+        <div class="slds-notify__content">
+          <h2 class="slds-text-heading_small">Message</h2>
+          <p>{message}</p>
+        </div>
+      </div>
+    </div>
+  </template>
+  <template if:true={showWarning}>
+    <div class="slds-notify_container">
+      <div
+        class="slds-notify slds-notify_toast slds-theme_warning"
+        role="alert"
+      >
+        <span class="slds-assistive-text">Warning</span>
+        <div class="slds-notify__content">
+          <h2 class="slds-text-heading_small">Warning Message</h2>
+          <p>{warningMessage}</p>
+        </div>
+      </div>
+    </div>
+  </template>
+
+  <template if:true={showModal}>
+    <form onsubmit={handleEditLog} data-id={logDetails.Id}>
+      <div class="app">
+        <div class="slds-is-relative slds-grid slds-wrap">
+          <div
+            class="slds-col--padded slds-size--1-of-1 slds-medium-size--5-of-12 slds-large-size--6-of-12"
+          >
+            <section
+              role="dialog"
+              tabindex="-1"
+              aria-labelledby="modal-heading-01"
+              aria-modal="true"
+              aria-describedby="modal-content-id-1"
+              class="slds-modal slds-fade-in-open"
+            >
+              <div class="slds-modal__container">
+                <header class="modal-header">
+                  <h2>Tasks</h2>
+                </header>
+                <div
+                  class="slds-modal__content slds-p-around--medium"
+                  id="modal-content-id-1"
+                  style="border-radius: 0px 0px 16px 16px"
+                >
+                  <div class="form-content">
+                    <div class="slds-form-element">
+                      <label class="slds-form-element__label" for="select-01">
+                        <abbr class="slds-required" title="required">* </abbr
+                        >Project</label
+                      >
+                      <div class="slds-form-element__control">
+                        <div class="slds-select_container">
+                          <select
+                            name="project"
+                            onchange={handleProjectChange}
+                            if:true={projectOptions}
+                            class="form-select"
+                          >
+                            <option value={logDetails.Project__c}>
+                              {logDetails.Project__c}
+                            </option>
+                            <template for:each={projectOptions} for:item="opt">
+                              <option key={opt.value} value={opt.value}>
+                                {opt.label}
+                              </option>
+                            </template>
+                          </select>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="slds-form-element">
+                      <label
+                        class="slds-form-element__label"
+                        for="text-input-id-46"
+                      >
+                        <abbr class="slds-required" title="required">* </abbr
+                        >Task Name</label
+                      >
+                      <div class="slds-form-element__control">
+                        <select
+                          name="task"
+                          onchange={handleTaskChange}
+                          class="form-select"
+                        >
+                          <option value={logDetails.Name}>
+                            {logDetails.Name}
+                          </option>
+                          <template for:each={taskOptions} for:item="opt">
+                            <option key={opt.value} value={opt.value}>
+                              {opt.label}
+                            </option>
+                          </template>
+                        </select>
+                      </div>
+                    </div>
+
+                    <div class="slds-form-element">
+                      <label
+                        class="slds-form-element__label"
+                        for="text-input-id-46"
+                      >
+                        <abbr class="slds-required" title="required">* </abbr
+                        >Description</label
+                      >
+                      <div class="slds-form-element__control">
+                        <lightning-input
+                          type="text"
+                          value={logDetails.Description__c}
+                          onchange={handleDescriptionChange}
+                        ></lightning-input>
+                      </div>
+                    </div>
+
+                    <div class="slds-form-element">
+                      <label
+                        class="slds-form-element__label"
+                        for="text-input-id-46"
+                      >
+                        <abbr class="slds-required" title="required">* </abbr
+                        >Time Spent (minutes)</label
+                      >
+                      <div class="slds-form-element__control">
+                        <lightning-input
+                          type="text"
+                          value={logDetails.Mins__c}
+                          onchange={handleTimeChange}
+                        ></lightning-input>
+                      </div>
+                    </div>
+
+                    <div class="button-group">
+                      <button class="cancel-button" onclick={handleCancel}>
+                        Cancel
+                      </button>
+                      <button class="submit-button" type="submit">
+                        Submit
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </section>
+            <div class="slds-backdrop slds-backdrop--open"></div>
+          </div>
+        </div>
+      </div>
+    </form>
+  </template>
+</template>
