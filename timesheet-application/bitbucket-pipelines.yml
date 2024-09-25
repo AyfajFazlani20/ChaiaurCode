@@ -1,0 +1,20 @@
+image:
+  name: salesforce/salesforcedx:7.75.1-slim
+
+pipelines:
+  default:
+    - step:
+        script:
+          - echo "Committed changes to a branch that does not match the listed branches in bitbucket-pipelines.yml."
+          - echo "You can skip running the pipeline by adding [skip ci] or [ci skip] (with []) to the git commit message."
+          - sfdx --version
+          - sfdx plugins --core
+
+  branches:
+    master:
+     - step:
+         script:
+           - sfdx --version
+           - sfdx force:auth:jwt:grant -f assets/server.key -i $SF_PROD_CLIENT_ID -u $SF_PROD_USERNAME -d -s -r https://login.salesforce.com
+           - sfdx force:source:deploy -x manifest/package.xml
+
