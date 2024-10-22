@@ -36,7 +36,6 @@ export default class TimesheetNavbar extends NavigationMixin(LightningElement) {
         checkManager({ userId: USER_ID })
             .then(result => {
                 this.isManager = result;
-                console.log('Is manager? : ', result);
             }).catch(error => {
                 console.error(error);
             })

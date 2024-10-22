@@ -3,7 +3,6 @@ import getActiveProjects from '@salesforce/apex/LogController.getActiveProjects'
 import getActiveTasks from '@salesforce/apex/LogController.getActiveTasks';
 import createLog from '@salesforce/apex/LogController.createLog' ;
 import getLogsByDateAndUser from '@salesforce/apex/LogController.getLogsByDateAndUser';
-import getUserProject from '@salesforce/apex/LogController.getUserProject';
 import getLoggedInUserName from '@salesforce/apex/LogController.getLoggedInUserName';
 import deleteRecordinTimesheet from '@salesforce/apex/LogController.deleteRecordinTimesheet'
 import editCurrentLog from '@salesforce/apex/LogController.editCurrentLog';
@@ -69,7 +68,7 @@ export default class TimesheetUserPage extends NavigationMixin(LightningElement)
         checkManager({userId : USER_ID})
         .then(result=>{
             this.isManager = result;
-            console.log('Ismanager? : ',result);
+           
         }).catch(error=>{
             console.error(error);
         })
@@ -79,7 +78,7 @@ export default class TimesheetUserPage extends NavigationMixin(LightningElement)
         checkSuperManager({userId : USER_ID})
         .then(result=>{
             this.isSuperManager = result;
-            console.log('IsSupermanager? : ',result);
+           
         }).catch(error=>{
             console.error(error);
         })
@@ -89,7 +88,7 @@ export default class TimesheetUserPage extends NavigationMixin(LightningElement)
         checkMember({userId : USER_ID})
         .then(result=>{
             this.isMember = result;
-            console.log('IsMember? : ',result);
+            
         }).catch(error=>{
             console.error(error);
         })
@@ -106,40 +105,39 @@ export default class TimesheetUserPage extends NavigationMixin(LightningElement)
     
     
 
-/*e
-*/
 
+ taskOptions=[] ;
   
-    taskOptions = [
-    { label: 'Analysis', value: 'Analysis' },
-    { label: 'Code Review', value: 'Code Review' },
-    { label: 'Create Charts', value: 'Create Charts' },
-    { label: 'DB Activity', value: 'DB Activity' },
-    { label: 'Data Migration', value: 'Data Migration' },
-    { label: 'Design', value: 'Design' },
-    { label: 'Development', value: 'Development' },
-    { label: 'Documentation', value: 'Documentation' },
-    { label: 'DSM', value: 'DSM' },
-    { label: 'Explore Data', value: 'Explore Data' },
-    { label: 'Holiday', value: 'Holiday' },
-    { label: 'HR Accounts', value: 'HR Accounts' },
-    { label: 'HR General', value: 'HR General' },
-    { label: 'HR Project Delivery', value: 'HR Project Delivery' },
-    { label: 'IT Support and others', value: 'IT Support and others' },
-    { label: 'Idle Time', value: 'Idle Time' },
-    { label: 'Learning', value: 'Learning' },
-    { label: 'Leave', value: 'Leave' },
-    { label: 'Meeting (Internal Discussion)', value: 'Meeting (Internal Discussion)' },
-    { label: 'Meeting', value: 'Meeting'},
-    { label: 'POC', value: 'POC' },
-    { label: 'Project Discussion', value: 'Project Discussion' },
-    { label: 'Project Huddle', value: 'Project Huddle' },
-    { label: 'Sprint Management', value: 'Sprint Management' },
-    { label: 'Story Creation', value: 'Story Creation' },
-    { label: 'Tech Discussion', value: 'Tech Discussion' },
-    { label: 'Testing', value: 'Testing' },
-    { label: 'Unit Testing', value: 'Unit Testing' }
-];
+//     taskOptions = [
+//     { label: 'Analysis', value: 'Analysis' },
+//     { label: 'Code Review', value: 'Code Review' },
+//     { label: 'Create Charts', value: 'Create Charts' },
+//     { label: 'DB Activity', value: 'DB Activity' },
+//     { label: 'Data Migration', value: 'Data Migration' },
+//     { label: 'Design', value: 'Design' },
+//     { label: 'Development', value: 'Development' },
+//     { label: 'Documentation', value: 'Documentation' },
+//     { label: 'DSM', value: 'DSM' },
+//     { label: 'Explore Data', value: 'Explore Data' },
+//     { label: 'Holiday', value: 'Holiday' },
+//     { label: 'HR Accounts', value: 'HR Accounts' },
+//     { label: 'HR General', value: 'HR General' },
+//     { label: 'HR Project Delivery', value: 'HR Project Delivery' },
+//     { label: 'IT Support and others', value: 'IT Support and others' },
+//     { label: 'Idle Time', value: 'Idle Time' },
+//     { label: 'Learning', value: 'Learning' },
+//     { label: 'Leave', value: 'Leave' },
+//     { label: 'Meeting (Internal Discussion)', value: 'Meeting (Internal Discussion)' },
+//     { label: 'Meeting', value: 'Meeting'},
+//     { label: 'POC', value: 'POC' },
+//     { label: 'Project Discussion', value: 'Project Discussion' },
+//     { label: 'Project Huddle', value: 'Project Huddle' },
+//     { label: 'Sprint Management', value: 'Sprint Management' },
+//     { label: 'Story Creation', value: 'Story Creation' },
+//     { label: 'Tech Discussion', value: 'Tech Discussion' },
+//     { label: 'Testing', value: 'Testing' },
+//     { label: 'Unit Testing', value: 'Unit Testing' }
+// ];
 
 
     actions = [
@@ -168,7 +166,7 @@ export default class TimesheetUserPage extends NavigationMixin(LightningElement)
         // Initialize selectedDate with today's date
         this.selectedDate = new Date();
         this.displayDate=this.formatDateToDayMonth(this.selectedDate);
-        console.log('User Id:', USER_ID);  //user id fetched
+       
         this.fetchLogs();  //fetch logs of selected date
         const currentDate = new Date();
         this.currentYear = currentDate.getFullYear();
@@ -200,14 +198,10 @@ export default class TimesheetUserPage extends NavigationMixin(LightningElement)
         Promise.all([
             loadScript(this, ChartJs)
         ])
-        .then(() => {
-            // Chart.js library loaded
-            console.log('lib loaded');
-            
+        .then(() => {     
             this.renderPieChart();
         })
         .catch(error => {
-            console.log('Error loading Chart.js');
             console.error(error);
         });
     }
@@ -237,18 +231,18 @@ export default class TimesheetUserPage extends NavigationMixin(LightningElement)
         }
     }
 
-    @wire(getUserProject, { userId: USER_ID })
-    wiredUserProject({ error, data }) {
-        if (data) {
+    // @wire(getUserProject, { userId: USER_ID })
+    // wiredUserProject({ error, data }) {
+    //     if (data) {
             
-            this.projectOptions = JSON.parse(data).map(option => ({
-                label: option,
-                value: option
-            }));
-        } else if (error) {
-            console.error("Error fetching projects",error);
-        }
-    }
+    //         this.projectOptions = JSON.parse(data).map(option => ({
+    //             label: option,
+    //             value: option
+    //         }));
+    //     } else if (error) {
+    //         console.error("Error fetching projects",error);
+    //     }
+    // }
 
 
     toggleDropdown() {
@@ -289,7 +283,6 @@ export default class TimesheetUserPage extends NavigationMixin(LightningElement)
         
         const selectedDate = new Date(event.currentTarget.dataset.date);
         this.displayDate=this.formatDateToDayMonth(selectedDate);
-        console.log('Selected date:', selectedDate);
         this.selectedDate = selectedDate;
         if(this.selectedDate > new Date()){
            
@@ -418,7 +411,6 @@ export default class TimesheetUserPage extends NavigationMixin(LightningElement)
         }
     handleProjectChange(event) {
         this.projectName = event.target.value;
-        console.log('Projectname:',this.projectName);
         }
     
     handleDescriptionChange(event){
@@ -489,7 +481,6 @@ export default class TimesheetUserPage extends NavigationMixin(LightningElement)
             setTimeout(() => {
                  this.showMessage = false;
             }, 1000);
-            console.log('Log record created successfully:', result);
             this.timeSpent = '';
             this.description='';
             this.setSelectedTask("Select Task");
@@ -511,9 +502,10 @@ export default class TimesheetUserPage extends NavigationMixin(LightningElement)
         } 
         else if(actionName === 'edit'){
             this.handleEdit(row);
-        }else {
-            console.log('Error while deleting the record');
         }
+        // else {
+        //     // console.log('Error while deleting the record');
+        // }
     }
 
     handleEdit(row){
@@ -697,33 +689,14 @@ export default class TimesheetUserPage extends NavigationMixin(LightningElement)
     @track startDate;
     @track endDate;
     @track selectedDates = [];
-    // handleStartDateChange(event) {
-    //     console.log('Current Date' ,this.currentDate) ;
-    //     console.log('Event target value ki value' ,event.target.value) ;
-    //     if(event.target.value > this.currentDate)
-    //     {
-    //         console.log('inside future date') ;
-    //         this.showWarning = true;
-    //         this.warningMessage="You cant log hours for future dates" ;
-    //         setTimeout(() => {
-    //              this.showWarning = false;
-    //         }, 2000);
-    //         return ;
-    //     }
-    //     this.startDate = event.target.value;
-    // }
-
-    handleStartDateChange(event) {
-        // console.log('Current Date', this.currentDate);
-        // console.log('Event target value ki value', event.target.value);
     
-        // Convert event.target.value to a Date object
+    handleStartDateChange(event) {
+       
         const selectedDate = new Date(event.target.value);
     
         // Check if selectedDate is greater than currentDate
         if (selectedDate > new Date()) {
             this.startDate = '';
-            console.log('inside future date');
             this.showWarning = true;
             this.warningMessage = "You can't log hours for future dates";
             setTimeout(() => {
@@ -754,53 +727,58 @@ export default class TimesheetUserPage extends NavigationMixin(LightningElement)
   
  
     handleSelectDates() {
-        if(!this.startDate || !this.endDate)
-        {
-            // console.log("Select both start and end dates") ;
+        if (!this.startDate || !this.endDate) {
             this.showError = true;
-            this.message = "Select both start and end dates"
-
+            this.message = "Select both start and end dates";
+    
             setTimeout(() => {
-                 this.showError = false;
+                this.showError = false;
             }, 1000);
-
+    
             return false;
         }
-     
+    
         const start = new Date(this.startDate);
-
         const end = new Date(this.endDate);
         const dates = [];
-        if(start > end) 
-        {
-            // console.log("Start date cant be greater than End date");
+    
+        if (start > end) {
             this.showError = true;
-            this.message = "Start date cant be greater than End date"
-
+            this.message = "Start date can't be greater than End date";
+    
             setTimeout(() => {
-                 this.showError = false;
+                this.showError = false;
             }, 1000);
             return false;
         }
+    
         while (start <= end) {
-           
-            dates.push(start.toISOString()); 
+            dates.push(start.toISOString());
             start.setDate(start.getDate() + 1);
-
         }
-
-        this.selectedDates = this.filterWeekends(dates);;
-        console.log('Selected Dates:', this.selectedDates);
-        return true ;
+    
+        this.selectedDates = this.filterWeekendsAndHolidays(dates);
+        return true;
     }
-
-    filterWeekends(dates) {
+    
+    filterWeekendsAndHolidays(dates) {
+        const holidays = [
+            '08-15', // 15th August
+            '10-02', // 2nd October
+            '10-31', // 31st October (Diwali)
+            '12-25'  // 25th December
+        ];
+    
         return dates.filter(dateStr => {
             const date = new Date(dateStr);
             const day = date.getUTCDay();
-            return day !== 0 && day !== 6; // 0 is Sunday, 6 is Saturday
+            const formattedDate = (`0${date.getUTCMonth() + 1}`).slice(-2) + '-' + (`0${date.getUTCDate()}`).slice(-2);
+    
+            // Remove weekends (Saturday & Sunday) and specific holidays
+            return day !== 0 && day !== 6 && !holidays.includes(formattedDate);
         });
     }
+    
 
 
     handleToggleChange(event) {
@@ -815,9 +793,7 @@ export default class TimesheetUserPage extends NavigationMixin(LightningElement)
 
     @wire(getActiveProjects)
     wiredProjects({ data, error }) {
-        console.log('inside activeprojects')
         if (data) {
-            console.log('ho');
             // Map project data to the desired format for the select options
             this.projectOptions = data.map(proj => {
                 return { label: proj.Name, value: proj.Name };
@@ -832,7 +808,6 @@ export default class TimesheetUserPage extends NavigationMixin(LightningElement)
     @wire(getActiveTasks)
     wiredTasks({ data, error }){
         if (data) {
-            console.log('ho');
             // Map project data to the desired format for the select options
             this.taskOptions = data.map(task => {
                 return { label: task.Name, value: task.Name };
@@ -897,8 +872,6 @@ export default class TimesheetUserPage extends NavigationMixin(LightningElement)
             
            createMultiRecords({ selectedDates: this.selectedDates,  Name: this.taskName,  Project: this.projectName,  Description : this.description, Mins: this.timeSpent,userId: USER_ID })
                .then(result => {
-                 
-                   console.log('Records created successfully:', result);
                    this.fetchLogsForMonth(this.currentYear, this.currentMonth);
                    this.showMessage = true;
                     this.message = "Multiple Date Entries created successfully" ;

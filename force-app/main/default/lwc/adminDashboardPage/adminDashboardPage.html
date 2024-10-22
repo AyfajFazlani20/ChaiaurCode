@@ -35,6 +35,12 @@
                         <th data-field="TotalMinutes" onclick={handleSort}>
                             Total Minutes Spent
                         </th>
+                        <th data-field="BillableMinutes" onclick={handleSort}>
+                            Billable Minutes
+                        </th>
+                        <th data-field="NonBillableMinutes" onclick={handleSort}>
+                            Non-Billable Minutes 
+                        </th>
                         <th>Status</th>
                     </tr>
                 </thead>
@@ -44,6 +50,8 @@
                             <tr key={member.Id}>
                                 <td>{member.FirstName} {member.LastName}</td>
                                 <td>{member.TotalMinutes}</td>
+                                <td>{member.BillableMinutes}</td>
+                                <td>{member.NonBillableMinutes}</td>
                                 <td>
                                     <div class="up-to-date-status-column">
                                         Done
@@ -57,6 +65,8 @@
                             <tr key={member.Id}>
                                 <td>{member.FirstName} {member.LastName}</td>
                                 <td>{member.TotalMinutes}</td>
+                                <td>{member.BillableMinutes}</td>
+                                <td>{member.NonBillableMinutes}</td>
                                 <td> 
                                     <div class="remaining-status-column">
                                         Remaining

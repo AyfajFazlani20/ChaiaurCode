@@ -1,5 +1,29 @@
 public with sharing class LogController {
 
+    @AuraEnabled(cacheable=true)
+    public static List<ET_Project__c> getActiveProjects(){
+        try{
+            return [SELECT Id, Name, isActive__c, isBillable__c
+                                        FROM ET_Project__c 
+                                        WHERE isActive__c = true 
+                                        ORDER BY Name ASC
+    ];
+        }catch(Exception e){
+            throw new AuraHandledException(e.getMessage());
+        }
+        }
+    
+    @AuraEnabled(cacheable=true)
+    public static List<ET_Task__c> getActiveTasks(){
+        try{
+            return [SELECT Id, Name FROM ET_Task__c ORDER BY Name ASC ];
+                                        
+   
+        }catch(Exception e){
+            throw new AuraHandledException(e.getMessage());
+        }
+        }
+    
     
     @AuraEnabled
     public static boolean checkManager(Id userId){

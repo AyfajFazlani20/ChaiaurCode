@@ -178,7 +178,6 @@ export default class AdminDashboardPage extends LightningElement {
         checkMember({userId : USER_ID})
         .then(result=>{
             this.isMember = result;
-            console.log('IsMember? : ',result);
         }).catch(error=>{
             console.error(error);
         })

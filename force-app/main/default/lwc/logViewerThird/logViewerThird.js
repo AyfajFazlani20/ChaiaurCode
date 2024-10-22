@@ -6,8 +6,8 @@ import { loadScript } from 'lightning/platformResourceLoader';
 import XLSX_RESOURCE from '@salesforce/resourceUrl/xlsx';
 import getAllFilteredLogs from '@salesforce/apex/logViewerSecond.getAllFilteredLogs';
 
-import getLogsByProjectwithoutpagination from '@salesforce/apex/LogViewerSecond.getLogsByProjectwithoutpagination';
-import getProjectBillableStatus from '@salesforce/apex/LogViewerSecond.getProjectBillableStatus';
+import getLogsByProjectwithoutpagination from '@salesforce/apex/logViewerSecond.getLogsByProjectwithoutpagination';
+import getProjectBillableStatus from '@salesforce/apex/logViewerSecond.getProjectBillableStatus';
 
 export default class LogViewer extends LightningElement {
 
@@ -108,7 +108,6 @@ export default class LogViewer extends LightningElement {
         this.checkMember() ;
         loadScript(this, XLSX_RESOURCE)
             .then(() => {
-                console.log('xlsx library loaded successfully');
             })
             .catch(error => {
                 console.error('Error loading xlsx library:', error);
@@ -199,7 +198,7 @@ export default class LogViewer extends LightningElement {
                 return sum;
             }, 0);
 
-            console.log('Total minutes:', this.totalMinutes);
+           
             this.error = undefined;
             this.isLoading = false;
         })
@@ -493,7 +492,6 @@ handleEndDateChange(event) {
         checkMember({userId : USER_ID})
         .then(result=>{
             this.isMember = result;
-            console.log('IsMember? : ',result);
         }).catch(error=>{
             console.error(error);
         })

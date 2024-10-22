@@ -30,12 +30,12 @@
 }
 
 .upper-section {
-  margin-top: 50px;
   display: flex;
   flex-direction: row;
   justify-content: space-around;
   margin-bottom: 50px;
   margin-left: 50px;
+  margin-top: 50px;
 }
 
 .lower-section {

@@ -19,8 +19,7 @@ onchange={handleBillableFilterChange}>
 
            <lightning-input type="date" name="startDate" label="Start Date" value={startDate} onchange={handleStartDateChange} max={today}></lightning-input>
            <lightning-input type="date" name="endDate" label="End Date" value={endDate} onchange={handleEndDateChange} max={today}></lightning-input>
-           <!-- <button class="clearbutton" onclick={clearDateFilters}>Clear Date</button> -->
-           <!-- <button class="clearbutton" onclick={clearDateFilters}>Clear dates</button> -->
+        
            <lightning-button class="slds-m-top_large" label="Clear Dates" variant="brand-outline" onclick={clearDateFilters}></lightning-button>
        </div>
    </div>
@@ -28,13 +27,6 @@ onchange={handleBillableFilterChange}>
    <template if:true={ismessage}>
        <p class="ismessage">Warning <br>You cannot select a future date</p>
    </template>
-
-   <!-- <template if:true={ismessage}>
-       <div class="slds-notify slds-notify_alert slds-theme_alert-texture slds-theme_warning">
-           <span class="slds-assistive-text">Warning</span>
-           <h2>You cannot select a future date</h2>
-       </div>
-   </template> -->
 
    
        <div class="action-buttons">
@@ -68,12 +60,7 @@ sorted-by={sortedBy}
 sorted-direction={sortDirection}
 onsort={handleSort}>
 </lightning-datatable>
-               <!-- <lightning-datatable 
-                   class="slds-max-medium-table_stacked"
-                   key-field="id"
-                   data={logs}
-                   columns={columns}>
-               </lightning-datatable> -->
+            
            </template>
            <template if:false={logs}>
                <div class="slds-text-align_center">
